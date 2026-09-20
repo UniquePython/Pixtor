@@ -8,6 +8,8 @@
 #define B_WIDTH 100
 #define B_HEIGHT 60
 
+#define HEADING_FONT_SIZE 128
+
 static Button new;
 
 void MenuEnter(App *app)
@@ -29,11 +31,10 @@ void MenuDraw(const App *app)
     ClearBackground(app->theme.bg.menu);
 
     const char *title = "Pixtor";
-    const int fontSize = 128;
-    int textWidth = MeasureText(title, fontSize);
+    int textWidth = MeasureText(title, HEADING_FONT_SIZE);
     int textX = (app->width - textWidth) / 2;
     int textY = (app->height / 5);
-    DrawText(title, textX, textY, fontSize, ORANGE);
+    DrawText(title, textX, textY, HEADING_FONT_SIZE, ORANGE);
 
     ButtonDraw(&new);
 }

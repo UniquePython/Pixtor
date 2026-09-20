@@ -6,13 +6,16 @@
 
 typedef struct App
 {
-    unsigned int width;
-    unsigned int height;
+    int width;
+    int height;
     const char *title;
 
     AppState state;
 
     Theme theme;
+
+    int canvasW;
+    int canvasH;
 
 } App;
 

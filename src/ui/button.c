@@ -1,5 +1,7 @@
 #include "pixtor/ui/button.h"
 
+#define BUTTON_FONT_SIZE 40
+
 Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height)
 {
     return ButtonNew(text, background, foreground, background, background, x, y, width, height);
@@ -51,11 +53,10 @@ void ButtonDraw(const Button *button)
 
     DrawRectangleRec(button->hitbox, color);
 
-    int fontSize = 40;
-    int textWidth = MeasureText(button->text, fontSize);
+    int textWidth = MeasureText(button->text, BUTTON_FONT_SIZE);
 
     float textX = button->hitbox.x + (button->hitbox.width - textWidth) / 2.0f;
-    float textY = button->hitbox.y + (button->hitbox.height - fontSize) / 2.0f;
+    float textY = button->hitbox.y + (button->hitbox.height - BUTTON_FONT_SIZE) / 2.0f;
 
-    DrawText(button->text, (int)textX, (int)textY, fontSize, button->color.foreground);
+    DrawText(button->text, (int)textX, (int)textY, BUTTON_FONT_SIZE, button->color.foreground);
 }
