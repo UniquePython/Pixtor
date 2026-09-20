@@ -10,5 +10,5 @@ void EditorExit(App *app) { (void)app; }
 void EditorDraw(const App *app)
 {
     ClearBackground(app->theme.bg.editor);
-    DrawText("New Canvas", 20, 20, 40, RAYWHITE);
+    DrawText("Editor", 20, 20, 40, RAYWHITE);
 }

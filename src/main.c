@@ -9,6 +9,8 @@ int main(void)
     Theme theme = {
         .bg = {
             .menu = (Color){18, 18, 18, 255},
+            .newCanvas = (Color){18, 18, 18, 255},
+            .editor = (Color){18, 18, 18, 255},
         },
         .button = {
             .background = (Color){65, 65, 65, 255},
