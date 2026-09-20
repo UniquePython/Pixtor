@@ -2,6 +2,7 @@
 #include "pixtor/canvas.h"
 #include "pixtor/ui/button.h"
 #include "pixtor/ui/colorpicker.h"
+#include "pixtor/ui/checker.h"
 #include "pixtor/appstate.h"
 #include "pixtor/app.h"
 
@@ -17,6 +18,11 @@
 #define TOOL_BTN_H 44
 #define TOOLBAR_PAD 10
 
+#define SWATCH_SIZE 36
+#define SWATCH_LABEL_SIZE 30
+#define SWATCH_LABEL_GAP 8
+#define SWATCH_GROUP_GAP 24
+
 #define MIN_CELL_SIZE 2.0f
 
 typedef enum
@@ -25,6 +31,13 @@ typedef enum
     TOOL_ERASER,
 
 } Tool;
+
+typedef enum
+{
+    PICK_PENCIL,
+    PICK_BG,
+
+} PickTarget;
 
 static Button pencilBtn;
 static Button eraserBtn;
@@ -40,6 +53,13 @@ static Vector2 lastCell;
 static bool painting;
 
 static ColorPicker picker;
+static PickTarget pickTarget;
+static Rectangle pencilSwatch;
+static Rectangle bgSwatch;
+
+static float penLabelX;
+static float bgLabelX;
+static float labelY;
 
 void EditorEnter(App *app)
 {
@@ -81,6 +101,19 @@ void EditorEnter(App *app)
     offset.y = viewport.y + (viewport.height - canvas.height * cellSize) / 2.0f;
 
     picker = ColorPickerNew(&app->theme, app->width, app->height);
+
+    float swatchY = (TOOLBAR_H - SWATCH_SIZE) / 2.0f;
+    labelY = (TOOLBAR_H - SWATCH_LABEL_SIZE) / 2.0f;
+    float x = eraserBtn.hitbox.x + eraserBtn.hitbox.width + SWATCH_GROUP_GAP;
+
+    penLabelX = x;
+    x += MeasureText("Pen", SWATCH_LABEL_SIZE) + SWATCH_LABEL_GAP;
+    pencilSwatch = (Rectangle){x, swatchY, SWATCH_SIZE, SWATCH_SIZE};
+    x += SWATCH_SIZE + SWATCH_GROUP_GAP;
+
+    bgLabelX = x;
+    x += MeasureText("BG", SWATCH_LABEL_SIZE) + SWATCH_LABEL_GAP;
+    bgSwatch = (Rectangle){x, swatchY, SWATCH_SIZE, SWATCH_SIZE};
 }
 
 static Vector2 MouseToCell(Vector2 mouse)
@@ -126,6 +159,11 @@ static Color CurrentColor(void)
     return tool == TOOL_ERASER ? BLANK : pencilColor;
 }
 
+static bool RectClicked(Rectangle rect)
+{
+    return IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), rect);
+}
+
 void EditorUpdate(App *app)
 {
     (void)app;
@@ -134,19 +172,36 @@ void EditorUpdate(App *app)
         tool = TOOL_PENCIL;
     if (IsKeyPressed(KEY_E))
         tool = TOOL_ERASER;
-    if (IsKeyPressed(KEY_C))
-        ColorPickerOpen(&picker, pencilColor);
 
-    if (ButtonIsClicked(&pencilBtn))
-        tool = TOOL_PENCIL;
-    if (ButtonIsClicked(&eraserBtn))
-        tool = TOOL_ERASER;
+    if (!picker.open)
+    {
+        if (RectClicked(pencilSwatch))
+        {
+            pickTarget = PICK_PENCIL;
+            ColorPickerOpen(&picker, pencilColor);
+        }
+        else if (RectClicked(bgSwatch))
+        {
+            pickTarget = PICK_BG;
+            ColorPickerOpen(&picker, canvasBg);
+        }
+
+        if (ButtonIsClicked(&pencilBtn))
+            tool = TOOL_PENCIL;
+        if (ButtonIsClicked(&eraserBtn))
+            tool = TOOL_ERASER;
+    }
 
     bool wasOpen = picker.open;
 
     Color chosen;
     if (ColorPickerUpdate(&picker, &chosen))
-        pencilColor = chosen;
+    {
+        if (pickTarget == PICK_PENCIL)
+            pencilColor = chosen;
+        else
+            canvasBg = chosen;
+    }
 
     if (wasOpen)
         return;
@@ -212,7 +267,13 @@ static void DrawGrid_(const App *app)
 
 static void DrawCanvas(const App *app)
 {
-    DrawRectangleRec((Rectangle){offset.x, offset.y, canvas.width * cellSize, canvas.height * cellSize}, canvasBg);
+    Rectangle canvasRect = {offset.x, offset.y, canvas.width * cellSize, canvas.height * cellSize};
+    Rectangle visible = GetCollisionRec(canvasRect, viewport);
+
+    if (visible.width > 0 && visible.height > 0)
+        DrawChecker(visible, 12, (Vector2){offset.x, offset.y});
+
+    DrawRectangleRec(canvasRect, canvasBg);
 
     for (int y = 0; y < canvas.height; y++)
     {
@@ -232,6 +293,13 @@ static void DrawCanvas(const App *app)
     DrawGrid_(app);
 }
 
+static void DrawSwatch(Rectangle swatch, Color color, const App *app)
+{
+    DrawChecker(swatch, 8, (Vector2){swatch.x, swatch.y});
+    DrawRectangleRec(swatch, color);
+    DrawRectangleLinesEx(swatch, 2.0f, app->theme.button.foreground);
+}
+
 void EditorDraw(const App *app)
 {
     ClearBackground(app->theme.bg.editor);
@@ -247,6 +315,12 @@ void EditorDraw(const App *app)
 
     ButtonDraw(&pencilBtn);
     ButtonDraw(&eraserBtn);
+
+    DrawText("Pen", (int)penLabelX, (int)labelY, SWATCH_LABEL_SIZE, app->theme.button.foreground);
+    DrawSwatch(pencilSwatch, pencilColor, app);
+
+    DrawText("BG", (int)bgLabelX, (int)labelY, SWATCH_LABEL_SIZE, app->theme.button.foreground);
+    DrawSwatch(bgSwatch, canvasBg, app);
 
     ColorPickerDraw(&picker, app->width, app->height);
 }

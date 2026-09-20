@@ -1,4 +1,5 @@
 #include "pixtor/ui/colorpicker.h"
+#include "pixtor/ui/checker.h"
 
 #include <raylib.h>
 
@@ -155,6 +156,7 @@ void ColorPickerDraw(const ColorPicker *cp, int windowW, int windowH)
     TextBoxDraw(&cp->a);
 
     // live preview
+    DrawChecker(cp->preview, 16, (Vector2){cp->preview.x, cp->preview.y});
     DrawRectangleRec(cp->preview, PreviewColor(cp));
     DrawRectangleLinesEx(cp->preview, 2.0f, cp->color.text);
 
