@@ -11,6 +11,7 @@ typedef struct
         Color newCanvas;
         Color editor;
         Color toolbar;
+        Color canvas;
     } bg;
 
     struct
@@ -28,6 +29,8 @@ typedef struct
         Color border;
         Color borderFocused;
     } textbox;
+
+    Color grid;
 
 } Theme;
 

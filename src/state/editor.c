@@ -18,7 +18,7 @@ static Vector2 offset;
 
 void EditorEnter(App *app)
 {
-    canvas = CanvasNew(app->canvasW, app->canvasH, WHITE);
+    canvas = CanvasNew(app->canvasW, app->canvasH, app->theme.bg.canvas);
 
     if (canvas.pixels == NULL)
     {
@@ -47,7 +47,39 @@ void EditorExit(App *app)
     CanvasFree(&canvas);
 }
 
-static void DrawCanvas(void)
+static int GridThickness(void)
+{
+    float raw = cellSize * 0.05f;
+
+    if (raw < 1.0f)
+        return 0;
+
+    return (int)(raw + 0.5f);
+}
+
+static void DrawGrid_(const App *app)
+{
+    int thickness = GridThickness();
+    if (thickness == 0)
+        return;
+
+    float gridW = canvas.width * cellSize;
+    float gridH = canvas.height * cellSize;
+
+    for (int x = 0; x <= canvas.width; x++)
+    {
+        float lineX = offset.x + x * cellSize;
+        DrawRectangleRec((Rectangle){lineX - thickness / 2.0f, offset.y, (float)thickness, gridH}, app->theme.grid);
+    }
+
+    for (int y = 0; y <= canvas.height; y++)
+    {
+        float lineY = offset.y + y * cellSize;
+        DrawRectangleRec((Rectangle){offset.x, lineY - thickness / 2.0f, gridW, (float)thickness}, app->theme.grid);
+    }
+}
+
+static void DrawCanvas(const App *app)
 {
     for (int y = 0; y < canvas.height; y++)
     {
@@ -63,6 +95,8 @@ static void DrawCanvas(void)
             DrawRectangleRec(cell, CanvasGet(&canvas, x, y));
         }
     }
+
+    DrawGrid_(app);
 }
 
 void EditorDraw(const App *app)
@@ -70,7 +104,7 @@ void EditorDraw(const App *app)
     ClearBackground(app->theme.bg.editor);
 
     BeginScissorMode((int)viewport.x, (int)viewport.y, (int)viewport.width, (int)viewport.height);
-    DrawCanvas();
+    DrawCanvas(app);
     EndScissorMode();
 
     DrawRectangle(0, 0, app->width, TOOLBAR_H, app->theme.bg.toolbar);

@@ -12,6 +12,7 @@ int main(void)
             .newCanvas = (Color){18, 18, 18, 255},
             .editor = (Color){18, 18, 18, 255},
             .toolbar = (Color){36, 36, 36, 255},
+            .canvas = (Color){180, 180, 180, 255},
         },
         .button = {
             .background = (Color){65, 65, 65, 255},
@@ -25,6 +26,7 @@ int main(void)
             .border = (Color){200, 200, 200, 255},
             .borderFocused = (Color){230, 145, 45, 255},
         },
+        .grid = (Color){0, 0, 0, 255},
     };
 
     App app = {
