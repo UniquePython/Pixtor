@@ -161,3 +161,45 @@ void ColorPickerDraw(const ColorPicker *cp, int windowW, int windowH)
     ButtonDraw(&cp->cancel);
     ButtonDraw(&cp->ok);
 }
+
+void ColorPickerOpen(ColorPicker *cp, Color current)
+{
+    cp->open = true;
+    cp->original = current;
+
+    TextBoxSetInt(&cp->r, current.r);
+    TextBoxSetInt(&cp->g, current.g);
+    TextBoxSetInt(&cp->b, current.b);
+    TextBoxSetInt(&cp->a, current.a);
+
+    cp->r.focused = false;
+    cp->g.focused = false;
+    cp->b.focused = false;
+    cp->a.focused = false;
+}
+
+bool ColorPickerUpdate(ColorPicker *cp, Color *out)
+{
+    if (!cp->open)
+        return false;
+
+    TextBoxUpdate(&cp->r);
+    TextBoxUpdate(&cp->g);
+    TextBoxUpdate(&cp->b);
+    TextBoxUpdate(&cp->a);
+
+    if (ButtonIsClicked(&cp->cancel))
+    {
+        cp->open = false;
+        return false;
+    }
+
+    if (ButtonIsClicked(&cp->ok))
+    {
+        *out = PreviewColor(cp);
+        cp->open = false;
+        return true;
+    }
+
+    return false;
+}

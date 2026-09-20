@@ -41,5 +41,7 @@ typedef struct
 
 ColorPicker ColorPickerNew(const Theme *theme, int windowW, int windowH);
 void ColorPickerDraw(const ColorPicker *cp, int windowW, int windowH);
+void ColorPickerOpen(ColorPicker *cp, Color current);
+bool ColorPickerUpdate(ColorPicker *cp, Color *out);
 
 #endif

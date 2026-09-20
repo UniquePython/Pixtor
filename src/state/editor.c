@@ -1,6 +1,7 @@
 #include "pixtor/state/editor.h"
 #include "pixtor/canvas.h"
 #include "pixtor/ui/button.h"
+#include "pixtor/ui/colorpicker.h"
 #include "pixtor/appstate.h"
 #include "pixtor/app.h"
 
@@ -37,6 +38,8 @@ static float cellSize;
 static Vector2 offset;
 static Vector2 lastCell;
 static bool painting;
+
+static ColorPicker picker;
 
 void EditorEnter(App *app)
 {
@@ -76,6 +79,8 @@ void EditorEnter(App *app)
 
     offset.x = viewport.x + (viewport.width - canvas.width * cellSize) / 2.0f;
     offset.y = viewport.y + (viewport.height - canvas.height * cellSize) / 2.0f;
+
+    picker = ColorPickerNew(&app->theme, app->width, app->height);
 }
 
 static Vector2 MouseToCell(Vector2 mouse)
@@ -129,11 +134,22 @@ void EditorUpdate(App *app)
         tool = TOOL_PENCIL;
     if (IsKeyPressed(KEY_E))
         tool = TOOL_ERASER;
+    if (IsKeyPressed(KEY_C))
+        ColorPickerOpen(&picker, pencilColor);
 
     if (ButtonIsClicked(&pencilBtn))
         tool = TOOL_PENCIL;
     if (ButtonIsClicked(&eraserBtn))
         tool = TOOL_ERASER;
+
+    bool wasOpen = picker.open;
+
+    Color chosen;
+    if (ColorPickerUpdate(&picker, &chosen))
+        pencilColor = chosen;
+
+    if (wasOpen)
+        return;
 
     Vector2 mouse = GetMousePosition();
 
@@ -231,4 +247,6 @@ void EditorDraw(const App *app)
 
     ButtonDraw(&pencilBtn);
     ButtonDraw(&eraserBtn);
+
+    ColorPickerDraw(&picker, app->width, app->height);
 }
