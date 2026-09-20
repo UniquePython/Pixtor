@@ -40,5 +40,6 @@ typedef struct
 } ColorPicker;
 
 ColorPicker ColorPickerNew(const Theme *theme, int windowW, int windowH);
+void ColorPickerDraw(const ColorPicker *cp, int windowW, int windowH);
 
 #endif

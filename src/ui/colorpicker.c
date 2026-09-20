@@ -18,6 +18,26 @@ static int MaxInt(int a, int b)
     return a > b ? a : b;
 }
 
+static unsigned char ClampChannel(int value)
+{
+    if (value < 0)
+        return 0;
+    if (value > 255)
+        return 255;
+
+    return (unsigned char)value;
+}
+
+static Color PreviewColor(const ColorPicker *cp)
+{
+    return (Color){
+        ClampChannel(TextBoxGetInt(&cp->r)),
+        ClampChannel(TextBoxGetInt(&cp->g)),
+        ClampChannel(TextBoxGetInt(&cp->b)),
+        ClampChannel(TextBoxGetInt(&cp->a)),
+    };
+}
+
 ColorPicker ColorPickerNew(const Theme *theme, int windowW, int windowH)
 {
     ColorPicker cp = {0};
@@ -104,4 +124,40 @@ ColorPicker ColorPickerNew(const Theme *theme, int windowW, int windowH)
     cp.color.dim = theme->popup.dim;
 
     return cp;
+}
+
+void ColorPickerDraw(const ColorPicker *cp, int windowW, int windowH)
+{
+    if (!cp->open)
+        return;
+
+    // dim everything behind the popup
+    DrawRectangle(0, 0, windowW, windowH, cp->color.dim);
+
+    // panel
+    DrawRectangleRec(cp->panel, cp->color.panel);
+    DrawRectangleLinesEx(cp->panel, 2.0f, cp->color.text);
+
+    int titleW = MeasureText("Color", CP_TITLE_SIZE);
+    DrawText("Color", (int)(cp->panel.x + (cp->panel.width - titleW) / 2.0f),
+             (int)(cp->panel.y + CP_PANEL_PAD), CP_TITLE_SIZE, cp->color.text);
+
+    const char *labels[4] = {"R:", "G:", "B:", "A:"};
+    for (int i = 0; i < 4; i++)
+    {
+        int labelY = (int)(cp->rowY[i] + (CP_BOX_H - CP_LABEL_SIZE) / 2.0f);
+        DrawText(labels[i], cp->labelX, labelY, CP_LABEL_SIZE, cp->color.text);
+    }
+
+    TextBoxDraw(&cp->r);
+    TextBoxDraw(&cp->g);
+    TextBoxDraw(&cp->b);
+    TextBoxDraw(&cp->a);
+
+    // live preview
+    DrawRectangleRec(cp->preview, PreviewColor(cp));
+    DrawRectangleLinesEx(cp->preview, 2.0f, cp->color.text);
+
+    ButtonDraw(&cp->cancel);
+    ButtonDraw(&cp->ok);
 }
