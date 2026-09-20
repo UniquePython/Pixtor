@@ -30,5 +30,6 @@ TextBox TextBoxNew(Color background, Color foreground, Color border, Color borde
 void TextBoxUpdate(TextBox *tb);
 void TextBoxDraw(const TextBox *tb);
 int TextBoxGetInt(const TextBox *tb);
+void TextBoxSetInt(TextBox *tb, int value);
 
 #endif

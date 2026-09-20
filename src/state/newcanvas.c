@@ -64,6 +64,9 @@ void NewCanvasEnter(App *app)
                        (app->width - CREATE_W) / 2.0f, createY, CREATE_W, CREATE_H);
 
     error = NULL;
+
+    TextBoxSetInt(&widthBox, 64);
+    TextBoxSetInt(&heightBox, 64);
 }
 
 void NewCanvasUpdate(App *app)

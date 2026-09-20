@@ -73,3 +73,38 @@ int TextBoxGetInt(const TextBox *tb)
 
     return value;
 }
+
+void TextBoxSetInt(TextBox *tb, int value)
+{
+    if (value < 0)
+        value = 0;
+
+    int max = 1;
+    for (int i = 0; i < TEXTBOX_MAX_LEN; i++)
+        max *= 10;
+    max -= 1;
+
+    if (value > max)
+        value = max;
+
+    char digits[TEXTBOX_MAX_LEN + 1];
+    int len = 0;
+
+    if (value == 0)
+    {
+        digits[len++] = '0';
+    }
+    else
+    {
+        while (value > 0)
+        {
+            digits[len++] = (char)('0' + value % 10);
+            value /= 10;
+        }
+    }
+
+    tb->len = 0;
+    for (int i = len - 1; i >= 0; i--)
+        tb->buf[tb->len++] = digits[i];
+    tb->buf[tb->len] = '\0';
+}
