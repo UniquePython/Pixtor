@@ -20,6 +20,8 @@ typedef struct
 
     Rectangle hitbox;
 
+    bool selected;
+
 } Button;
 
 Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height);

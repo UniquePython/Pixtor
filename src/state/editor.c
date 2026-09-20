@@ -14,6 +14,7 @@
 #define MIN_CELL_SIZE 2.0f
 
 static Canvas canvas;
+static Color canvasBg;
 static Rectangle viewport;
 static float cellSize;
 static Vector2 offset;
@@ -22,7 +23,7 @@ static bool painting;
 
 void EditorEnter(App *app)
 {
-    canvas = CanvasNew(app->canvasW, app->canvasH, app->theme.bg.canvas);
+    canvas = CanvasNew(app->canvasW, app->canvasH, BLANK);
 
     if (canvas.pixels == NULL)
     {
@@ -147,6 +148,8 @@ static void DrawGrid_(const App *app)
 
 static void DrawCanvas(const App *app)
 {
+    DrawRectangleRec((Rectangle){offset.x, offset.y, canvas.width * cellSize, canvas.height * cellSize}, canvasBg);
+
     for (int y = 0; y < canvas.height; y++)
     {
         for (int x = 0; x < canvas.width; x++)
