@@ -1,7 +1,5 @@
 #include "pixtor/ui/button.h"
 
-#define BUTTON_FONT_SIZE 40
-
 Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height)
 {
     return ButtonNew(text, background, foreground, background, background, x, y, width, height);

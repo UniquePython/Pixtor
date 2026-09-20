@@ -5,6 +5,8 @@
 
 #include <stdbool.h>
 
+#define BUTTON_FONT_SIZE 40
+
 typedef struct
 {
     const char *text;

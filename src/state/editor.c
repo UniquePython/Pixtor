@@ -1,5 +1,6 @@
 #include "pixtor/state/editor.h"
 #include "pixtor/canvas.h"
+#include "pixtor/ui/button.h"
 #include "pixtor/appstate.h"
 #include "pixtor/app.h"
 
@@ -11,6 +12,10 @@
 
 #define TOOLBAR_H 60
 
+#define TOOL_BTN_W_PAD 10
+#define TOOL_BTN_H 44
+#define TOOLBAR_PAD 10
+
 #define MIN_CELL_SIZE 2.0f
 
 typedef enum
@@ -19,6 +24,9 @@ typedef enum
     TOOL_ERASER,
 
 } Tool;
+
+static Button pencilBtn;
+static Button eraserBtn;
 
 static Tool tool;
 static Color pencilColor;
@@ -46,6 +54,18 @@ void EditorEnter(App *app)
     pencilColor = BLACK;
 
     viewport = (Rectangle){0, TOOLBAR_H, (float)app->width, (float)(app->height - TOOLBAR_H)};
+
+    float btnY = (TOOLBAR_H - TOOL_BTN_H) / 2.0f;
+
+    float pW = MeasureText("Pencil", BUTTON_FONT_SIZE) + 2 * TOOL_BTN_W_PAD;
+    pencilBtn = ButtonNew("Pencil", app->theme.button.background, app->theme.button.foreground,
+                          app->theme.button.onHover, app->theme.button.onPress,
+                          TOOLBAR_PAD, btnY, pW, TOOL_BTN_H);
+
+    float eW = MeasureText("Eraser", BUTTON_FONT_SIZE) + 2 * TOOL_BTN_W_PAD;
+    eraserBtn = ButtonNew("Eraser", app->theme.button.background, app->theme.button.foreground,
+                          app->theme.button.onHover, app->theme.button.onPress,
+                          TOOLBAR_PAD + pW + TOOLBAR_PAD, btnY, eW, TOOL_BTN_H);
 
     float fitW = viewport.width / canvas.width;
     float fitH = viewport.height / canvas.height;
@@ -108,6 +128,11 @@ void EditorUpdate(App *app)
     if (IsKeyPressed(KEY_P))
         tool = TOOL_PENCIL;
     if (IsKeyPressed(KEY_E))
+        tool = TOOL_ERASER;
+
+    if (ButtonIsClicked(&pencilBtn))
+        tool = TOOL_PENCIL;
+    if (ButtonIsClicked(&eraserBtn))
         tool = TOOL_ERASER;
 
     Vector2 mouse = GetMousePosition();
@@ -200,4 +225,10 @@ void EditorDraw(const App *app)
     EndScissorMode();
 
     DrawRectangle(0, 0, app->width, TOOLBAR_H, app->theme.bg.toolbar);
+
+    pencilBtn.selected = (tool == TOOL_PENCIL);
+    eraserBtn.selected = (tool == TOOL_ERASER);
+
+    ButtonDraw(&pencilBtn);
+    ButtonDraw(&eraserBtn);
 }
