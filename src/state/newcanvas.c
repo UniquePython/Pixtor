@@ -78,7 +78,7 @@ void NewCanvasUpdate(App *app)
 
         if (!SizeIsValid(w) || !SizeIsValid(h))
         {
-            error = TextFormat("Size must be between %d and %d", CANVAS_MIN_SIZE, CANVAS_MAX_SIZE);
+            error = error = "Size must be between 16 and 1024";
         }
         else
         {
