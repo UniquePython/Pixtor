@@ -32,6 +32,7 @@ void EditorEnter(App *app)
     }
 
     painting = false;
+    canvasBg = app->theme.bg.canvas;
 
     viewport = (Rectangle){0, TOOLBAR_H, (float)app->width, (float)(app->height - TOOLBAR_H)};
 
