@@ -3,6 +3,7 @@
 
 typedef enum
 {
+    AS_NONE,
     AS_MENU,
 
 } AppState;

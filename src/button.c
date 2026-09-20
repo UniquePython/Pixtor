@@ -1,19 +1,19 @@
-#include "button.h"
+#include "pixtor/button.h"
 
-Button ButtonNewSimple(const char *text, Color color, Color textColor, float x, float y, float width, float height)
+Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height)
 {
-    return ButtonNew(text, color, color, color, textColor, x, y, width, height);
+    return ButtonNew(text, background, foreground, background, background, x, y, width, height);
 }
 
-Button ButtonNew(const char *text, Color usual, Color onHover, Color onPress, Color textColor, float x, float y, float width, float height)
+Button ButtonNew(const char *text, Color background, Color foreground, Color onHover, Color onPress, float x, float y, float width, float height)
 {
     return (Button){
         .text = text,
         .color = {
-            .usual = usual,
+            .background = background,
+            .foreground = foreground,
             .onHover = onHover,
             .onPress = onPress,
-            .text = textColor,
         },
         .hitbox = (Rectangle){
             .x = x,
@@ -34,14 +34,19 @@ bool ButtonIsClicked(const Button *button)
     return CheckCollisionPointRec(GetMousePosition(), button->hitbox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 }
 
+bool ButtonIsHeld(const Button *button)
+{
+    return CheckCollisionPointRec(GetMousePosition(), button->hitbox) && IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+}
+
 void ButtonDraw(const Button *button)
 {
-    Color color = button->color.usual;
+    Color color = button->color.background;
 
     if (ButtonIsHovered(button))
         color = button->color.onHover;
 
-    if (ButtonIsClicked(button))
+    if (ButtonIsHeld(button))
         color = button->color.onPress;
 
     DrawRectangleRec(button->hitbox, color);
@@ -52,5 +57,5 @@ void ButtonDraw(const Button *button)
     float textX = button->hitbox.x + (button->hitbox.width - textWidth) / 2.0f;
     float textY = button->hitbox.y + (button->hitbox.height - fontSize) / 2.0f;
 
-    DrawText(button->text, (int)textX, (int)textY, fontSize, button->color.text);
+    DrawText(button->text, (int)textX, (int)textY, fontSize, button->color.foreground);
 }

@@ -2,6 +2,7 @@
 #define APP_H_
 
 #include "pixtor/appstate.h"
+#include "pixtor/theme.h"
 
 typedef struct App
 {
@@ -11,7 +12,11 @@ typedef struct App
 
     AppState state;
 
+    Theme theme;
+
 } App;
+
+void ChangeAppState(App *app, AppState newState);
 
 void UpdateApp(App *app);
 void DrawApp(const App *app);

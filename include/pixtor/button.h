@@ -11,10 +11,10 @@ typedef struct
 
     struct
     {
-        Color usual;
+        Color background;
+        Color foreground;
         Color onHover;
         Color onPress;
-        Color text;
 
     } color;
 
@@ -22,10 +22,11 @@ typedef struct
 
 } Button;
 
-Button ButtonNewSimple(const char *text, Color color, Color textColor, float x, float y, float width, float height);
-Button ButtonNew(const char *text, Color usual, Color onHover, Color onPress, Color textColor, float x, float y, float width, float height);
+Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height);
+Button ButtonNew(const char *text, Color background, Color foreground, Color onHover, Color onPress, float x, float y, float width, float height);
 bool ButtonIsHovered(const Button *button);
 bool ButtonIsClicked(const Button *button);
+bool ButtonIsHeld(const Button *button);
 void ButtonDraw(const Button *button);
 
 #endif
