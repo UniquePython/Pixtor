@@ -10,6 +10,7 @@ typedef struct
         Color menu;
         Color newCanvas;
         Color editor;
+        Color toolbar;
     } bg;
 
     struct

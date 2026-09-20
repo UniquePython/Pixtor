@@ -47,8 +47,31 @@ void EditorExit(App *app)
     CanvasFree(&canvas);
 }
 
+static void DrawCanvas(void)
+{
+    for (int y = 0; y < canvas.height; y++)
+    {
+        for (int x = 0; x < canvas.width; x++)
+        {
+            Rectangle cell = {
+                offset.x + x * cellSize,
+                offset.y + y * cellSize,
+                cellSize,
+                cellSize,
+            };
+
+            DrawRectangleRec(cell, CanvasGet(&canvas, x, y));
+        }
+    }
+}
+
 void EditorDraw(const App *app)
 {
     ClearBackground(app->theme.bg.editor);
-    DrawText("Editor", 20, 20, 40, RAYWHITE);
+
+    BeginScissorMode((int)viewport.x, (int)viewport.y, (int)viewport.width, (int)viewport.height);
+    DrawCanvas();
+    EndScissorMode();
+
+    DrawRectangle(0, 0, app->width, TOOLBAR_H, app->theme.bg.toolbar);
 }
