@@ -14,8 +14,8 @@ BIN_DIR := bin
 # Executable name
 TARGET := pixtor
 
-# Automatically detect source and object files
-SRCS := $(wildcard $(SRC_DIR)/*.c)
+# Automatically detect source files recursively
+SRCS := $(shell find $(SRC_DIR) -name '*.c')
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 # Default target: release build
@@ -46,6 +46,7 @@ $(BIN_DIR)/$(TARGET): $(OBJS)
 # Build object files with dependency tracking
 # -----------------------------
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
 # Include dependency files

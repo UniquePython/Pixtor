@@ -1,4 +1,4 @@
-#include "pixtor/button.h"
+#include "pixtor/ui/button.h"
 
 Button ButtonNewSimple(const char *text, Color background, Color foreground, float x, float y, float width, float height)
 {

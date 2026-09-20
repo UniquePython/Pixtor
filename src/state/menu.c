@@ -1,5 +1,5 @@
 #include "pixtor/state/menu.h"
-#include "pixtor/button.h"
+#include "pixtor/ui/button.h"
 #include "pixtor/theme.h"
 #include "pixtor/app.h"
 
