@@ -26,6 +26,10 @@ int main(void)
             .border = (Color){200, 200, 200, 255},
             .borderFocused = (Color){230, 145, 45, 255},
         },
+        .popup = {
+            .panel = (Color){36, 36, 36, 255},
+            .dim = (Color){0, 0, 0, 160},
+        },
         .grid = (Color){0, 0, 0, 255},
     };
 

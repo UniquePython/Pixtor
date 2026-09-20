@@ -1,0 +1,10 @@
+#define CP_TITLE_SIZE 40
+#define CP_LABEL_SIZE 30
+#define CP_BOX_W 110
+#define CP_BOX_H 44
+#define CP_PREVIEW_W 120
+#define CP_GAP 20
+#define CP_ROW_GAP 14
+#define CP_PANEL_PAD 24
+#define CP_BTN_H 44
+#define CP_BTN_TEXT_PAD 10

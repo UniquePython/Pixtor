@@ -30,6 +30,12 @@ typedef struct
         Color borderFocused;
     } textbox;
 
+    struct
+    {
+        Color panel;
+        Color dim;
+    } popup;
+
     Color grid;
 
 } Theme;
