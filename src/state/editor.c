@@ -6,6 +6,8 @@
 #include <raylib.h>
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <math.h>
 
 #define TOOLBAR_H 60
 
@@ -15,6 +17,8 @@ static Canvas canvas;
 static Rectangle viewport;
 static float cellSize;
 static Vector2 offset;
+static Vector2 lastCell;
+static bool painting;
 
 void EditorEnter(App *app)
 {
@@ -39,7 +43,67 @@ void EditorEnter(App *app)
     offset.y = viewport.y + (viewport.height - canvas.height * cellSize) / 2.0f;
 }
 
-void EditorUpdate(App *app) { (void)app; }
+static Vector2 MouseToCell(Vector2 mouse)
+{
+    return (Vector2){
+        floorf((mouse.x - offset.x) / cellSize),
+        floorf((mouse.y - offset.y) / cellSize),
+    };
+}
+
+static void PaintLine(int x0, int y0, int x1, int y1, Color color)
+{
+    int dx = abs(x1 - x0);
+    int dy = -abs(y1 - y0);
+    int sx = x0 < x1 ? 1 : -1;
+    int sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy;
+
+    while (true)
+    {
+        CanvasSet(&canvas, x0, y0, color);
+
+        if (x0 == x1 && y0 == y1)
+            break;
+
+        int e2 = 2 * err;
+
+        if (e2 >= dy)
+        {
+            err += dy;
+            x0 += sx;
+        }
+        if (e2 <= dx)
+        {
+            err += dx;
+            y0 += sy;
+        }
+    }
+}
+
+void EditorUpdate(App *app)
+{
+    (void)app;
+
+    Vector2 mouse = GetMousePosition();
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse, viewport))
+    {
+        Vector2 cell = MouseToCell(mouse);
+
+        if (painting)
+            PaintLine((int)lastCell.x, (int)lastCell.y, (int)cell.x, (int)cell.y, BLACK);
+        else
+            CanvasSet(&canvas, (int)cell.x, (int)cell.y, BLACK);
+
+        lastCell = cell;
+        painting = true;
+    }
+    else
+    {
+        painting = false;
+    }
+}
 
 void EditorExit(App *app)
 {
