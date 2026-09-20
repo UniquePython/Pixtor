@@ -16,6 +16,12 @@ int main(void)
             .onHover = (Color){90, 90, 90, 255},
             .onPress = (Color){230, 145, 45, 255},
         },
+        .textbox = {
+            .background = (Color){65, 65, 65, 255},
+            .foreground = (Color){200, 200, 200, 255},
+            .border = (Color){200, 200, 200, 255},
+            .borderFocused = (Color){230, 145, 45, 255},
+        },
     };
 
     App app = {

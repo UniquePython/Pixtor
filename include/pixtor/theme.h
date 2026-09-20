@@ -20,6 +20,14 @@ typedef struct
         Color onPress;
     } button;
 
+    struct
+    {
+        Color background;
+        Color foreground;
+        Color border;
+        Color borderFocused;
+    } textbox;
+
 } Theme;
 
 #endif
