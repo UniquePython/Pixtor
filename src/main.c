@@ -1,6 +1,7 @@
 #include <raylib.h>
 
 #include "pixtor/app.h"
+#include "pixtor/appstate.h"
 
 int main(void)
 {
@@ -8,6 +9,7 @@ int main(void)
         .width = 900,
         .height = 600,
         .title = "Pixtor",
+        .state = AS_MENU,
     };
 
     InitWindow(app.width, app.height, app.title);
@@ -15,8 +17,11 @@ int main(void)
 
     while (!WindowShouldClose())
     {
+        UpdateApp(&app);
+
         BeginDrawing();
         ClearBackground(DARKBLUE);
+        DrawApp(&app);
         EndDrawing();
     }
 
