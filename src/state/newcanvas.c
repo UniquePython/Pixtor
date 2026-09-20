@@ -78,7 +78,7 @@ void NewCanvasUpdate(App *app)
 
         if (!SizeIsValid(w) || !SizeIsValid(h))
         {
-            error = error = "Size must be between 16 and 1024";
+            error = "Size must be between 16 and 1024";
         }
         else
         {

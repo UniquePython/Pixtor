@@ -30,6 +30,8 @@ void EditorEnter(App *app)
         return;
     }
 
+    painting = false;
+
     viewport = (Rectangle){0, TOOLBAR_H, (float)app->width, (float)(app->height - TOOLBAR_H)};
 
     float fitW = viewport.width / canvas.width;
