@@ -5,6 +5,8 @@ typedef enum
 {
     AS_NONE,
     AS_MENU,
+    AS_NEW_CANVAS,
+    AS_EDITOR,
 
 } AppState;
 

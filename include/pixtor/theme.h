@@ -8,6 +8,8 @@ typedef struct
     struct
     {
         Color menu;
+        Color newCanvas;
+        Color editor;
     } bg;
 
     struct

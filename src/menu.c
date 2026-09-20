@@ -20,8 +20,8 @@ void MenuEnter(App *app)
 
 void MenuUpdate(App *app)
 {
-    (void)app;
-    return;
+    if (ButtonIsClicked(&new))
+        ChangeAppState(app, AS_NEW_CANVAS);
 }
 
 void MenuDraw(const App *app)
