@@ -13,6 +13,15 @@
 
 #define MIN_CELL_SIZE 2.0f
 
+typedef enum
+{
+    TOOL_PENCIL,
+    TOOL_ERASER,
+
+} Tool;
+
+static Tool tool;
+static Color pencilColor;
 static Canvas canvas;
 static Color canvasBg;
 static Rectangle viewport;
@@ -33,6 +42,8 @@ void EditorEnter(App *app)
 
     painting = false;
     canvasBg = app->theme.bg.canvas;
+    tool = TOOL_PENCIL;
+    pencilColor = BLACK;
 
     viewport = (Rectangle){0, TOOLBAR_H, (float)app->width, (float)(app->height - TOOLBAR_H)};
 
@@ -85,20 +96,31 @@ static void PaintLine(int x0, int y0, int x1, int y1, Color color)
     }
 }
 
+static Color CurrentColor(void)
+{
+    return tool == TOOL_ERASER ? BLANK : pencilColor;
+}
+
 void EditorUpdate(App *app)
 {
     (void)app;
+
+    if (IsKeyPressed(KEY_P))
+        tool = TOOL_PENCIL;
+    if (IsKeyPressed(KEY_E))
+        tool = TOOL_ERASER;
 
     Vector2 mouse = GetMousePosition();
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mouse, viewport))
     {
         Vector2 cell = MouseToCell(mouse);
+        Color color = CurrentColor();
 
         if (painting)
-            PaintLine((int)lastCell.x, (int)lastCell.y, (int)cell.x, (int)cell.y, BLACK);
+            PaintLine((int)lastCell.x, (int)lastCell.y, (int)cell.x, (int)cell.y, color);
         else
-            CanvasSet(&canvas, (int)cell.x, (int)cell.y, BLACK);
+            CanvasSet(&canvas, (int)cell.x, (int)cell.y, color);
 
         lastCell = cell;
         painting = true;
