@@ -51,7 +51,7 @@ void ButtonDraw(const Button *button)
 
     DrawRectangleRec(button->hitbox, color);
 
-    int fontSize = 20;
+    int fontSize = 40;
     int textWidth = MeasureText(button->text, fontSize);
 
     float textX = button->hitbox.x + (button->hitbox.width - textWidth) / 2.0f;
